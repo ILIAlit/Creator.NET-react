@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using CreatorProject.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using CreatorProject3._0.Models.DataModel;
 
 namespace CreatorProject.Data
 {

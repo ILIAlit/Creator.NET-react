@@ -1,4 +1,4 @@
-﻿using CreatorProject.Models;
+﻿using CreatorProject3._0.Models.DataModel;
 
 namespace CreatorProject.Services.Interfaces
 {

@@ -1,9 +1,9 @@
 using CreatorProject.Data;
-using CreatorProject.Models;
 using CreatorProject.Services.Interfaces;
 using CreatorProject.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using CreatorProject3._0.Models.DataModel;
 
 var builder = WebApplication.CreateBuilder(args);
 

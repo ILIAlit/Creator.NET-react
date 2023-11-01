@@ -26,17 +26,17 @@ const SignUp = () => {
                   required
                   fullWidth
                   id="firstName"
-                  label="First Name"
+                  label="Имя"
                   autoFocus/>
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField
                   required
                   fullWidth
-                  id="lastName"
-                  label="Last Name"
-                  name="lastName"
-                  autoComplete="family-name"
+                  id="login"
+                  label="Логин"
+                  name="login"
+                  autoComplete="login"
                 />
               </Grid>
               <Grid item xs={12}>
@@ -44,7 +44,7 @@ const SignUp = () => {
                   required
                   fullWidth
                   id="email"
-                  label="Email Address"
+                  label="Почта"
                   name="email"
                   autoComplete="email"
                 />
@@ -54,7 +54,7 @@ const SignUp = () => {
                   required
                   fullWidth
                   name="password"
-                  label="Password"
+                  label="Пароль"
                   type="password"
                   id="password"
                   autoComplete="new-password"

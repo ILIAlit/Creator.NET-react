@@ -1,5 +1,5 @@
-﻿using CreatorProject.Models;
-using CreatorProject.Services.Interfaces;
+﻿using CreatorProject.Services.Interfaces;
+using CreatorProject3._0.Models.DataModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 

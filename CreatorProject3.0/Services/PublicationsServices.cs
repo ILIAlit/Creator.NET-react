@@ -1,6 +1,6 @@
 ﻿using CreatorProject.Data;
-using CreatorProject.Models;
 using CreatorProject.Services.Interfaces;
+using CreatorProject3._0.Models.DataModel;
 using Microsoft.EntityFrameworkCore;
 
 namespace CreatorProject.Services
