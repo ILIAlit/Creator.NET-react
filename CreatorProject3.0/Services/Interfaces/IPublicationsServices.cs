@@ -10,7 +10,7 @@ namespace CreatorProject.Services.Interfaces
 
         Task Get(int id);
 
-         IEnumerable<PublicationModel> Get();
+        IEnumerable<PublicationModel> Get();
 
         void Delete(int id);
     }

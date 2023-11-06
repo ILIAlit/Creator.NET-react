@@ -1,6 +1,7 @@
 import { Counter } from "./components/Counter";
 import { Home } from "./components/Home";
 import Publications from "./components/Publications/Publications";
+import SignIn from "./components/SignIn/SignIn";
 import SignUp from "./components/SignUp/SignUp";
 
 const AppRoutes = [
@@ -17,8 +18,12 @@ const AppRoutes = [
     element: <Publications />
   },
   {
-    path: '/signup',
+    path: '/register',
     element: <SignUp />
+  },
+  {
+    path: '/login',
+    element: <SignIn />
   }
 ];
 

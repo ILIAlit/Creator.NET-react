@@ -1,27 +1,25 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace CreatorProject3._0.Models.ServicesModel
+namespace CreatorProject3._0.Models.ViewModels
 {
-    public class RegisterRequestViewModel
+    public class LoginRequestViewModel
     {
         [Required]
         public string Name { get; set; }
 
         [Required]
-        public string Email { get; set; }
-
-        [Required]
         public string Password { get; set; }
+/*
+        public bool RememberMe { get; set; }*/
 
-        [Required]
-        public string ConfirmPassword { get; set; }
+        public string ReturnUrl { get; set; }
+        
     }
 
-    public class RegisterResponseViewModel
+    public class LoginResponseViewModel
     {
         public bool IsSucces { get; set; }
 
         public string? Massage { get; set; }
     }
 }
-

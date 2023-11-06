@@ -1,9 +1,46 @@
 import { ThemeProvider } from "@emotion/react";
 import { Container, CssBaseline, createTheme, Box, Typography, Grid, TextField, Button, Link } from "@mui/material";
+import { useState } from "react";
 
 const defaultTheme = createTheme();
 
 const SignUp = () => {
+  const [password, setPassword] = useState('');
+  const [passwordRepeat, setPasswordRepeat] = useState('');
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json;charset=utf-8'
+      },
+      body: JSON.stringify({
+        name: data.get('name'),
+        email: data.get('email'),
+        password: data.get('password'),
+        confirmpassword: data.get('confirmPassword')
+      })
+    };
+    const respons = await fetch(`/api/accounts/register`, options)
+    console.log(respons.json());
+  };
+
+  const handlePasswordChange = (event) => {
+    setPassword(event.target.value);
+  };
+
+  const handlePasswordRepeatChange = (event) => {
+    setPasswordRepeat(event.target.value);
+  };
+
+  const validatePasswordRepeat = () => {
+    if (password !== passwordRepeat) {
+      return 'Пароли не совпадают';
+    }
+  };
+
   return (
     <ThemeProvider theme={defaultTheme}>
       <Container component="main" maxWidth="xs">
@@ -17,27 +54,17 @@ const SignUp = () => {
           }}>
           <Typography component="h1" variant="h3" sx={{mb: 3}}>Creator.</Typography>
           <Typography component="h3" variant="h6">Регистрация</Typography>
-          <Box component="form" noValidate onSubmit="#" sx={{mt: 3}}>
+          <Box component="form" onSubmit={handleSubmit} sx={{mt: 3}}>
             <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12}>
               <TextField
                   autoComplete="given-name"
-                  name="firstName"
+                  name="name"
                   required
                   fullWidth
-                  id="firstName"
+                  id="name"
                   label="Имя"
                   autoFocus/>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  fullWidth
-                  id="login"
-                  label="Логин"
-                  name="login"
-                  autoComplete="login"
-                />
               </Grid>
               <Grid item xs={12}>
                 <TextField
@@ -57,7 +84,24 @@ const SignUp = () => {
                   label="Пароль"
                   type="password"
                   id="password"
+                  value={password}
+                  onChange={handlePasswordChange}
                   autoComplete="new-password"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  name="confirmPassword"
+                  label="Повторите пароль"
+                  type="password"
+                  id="confirmPassword"
+                  autoComplete="confirmPassword"
+                  value={passwordRepeat}
+                  onChange={handlePasswordRepeatChange}
+                  error={Boolean(validatePasswordRepeat())}
+                  helperText={validatePasswordRepeat()}
                 />
               </Grid>
             </Grid>
