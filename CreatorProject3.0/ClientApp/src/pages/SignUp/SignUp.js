@@ -1,30 +1,36 @@
 import { ThemeProvider } from "@emotion/react";
 import { Container, CssBaseline, createTheme, Box, Typography, Grid, TextField, Button, Link } from "@mui/material";
 import { useState } from "react";
+import AccountsServices from "../../services/AccountsServices";
+import { useNavigate } from "react-router-dom";
+
+const accountsServices = new AccountsServices();
 
 const defaultTheme = createTheme();
 
 const SignUp = () => {
+  const navigate = useNavigate();
   const [password, setPassword] = useState('');
   const [passwordRepeat, setPasswordRepeat] = useState('');
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    const options = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json;charset=utf-8'
-      },
-      body: JSON.stringify({
-        name: data.get('name'),
-        email: data.get('email'),
-        password: data.get('password'),
-        confirmpassword: data.get('confirmPassword')
-      })
-    };
-    const respons = await fetch(`/api/accounts/register`, options)
-    console.log(respons.json());
+    const registerData = {
+      name: data.get('name'),
+      email: data.get('email'),
+      password: data.get('password'),
+      confirmpassword: data.get('confirmPassword')
+    }
+    accountsServices.signUp(registerData)
+      .then((response) => {
+        console.log(response);
+        if(response.isSucces){
+          navigate('/login');
+        } else{
+          console.log("Error");
+        }
+      });
   };
 
   const handlePasswordChange = (event) => {

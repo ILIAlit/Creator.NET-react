@@ -6,14 +6,20 @@ const Publications = () => {
   const [allPublication, setPublications] = useState([]);
 
   const getPublications = async () => {
+    const token = sessionStorage.getItem('tokenKey');
     const options = {
-      method: 'GET'
+      method: 'GET',
+      headers: {
+        "Accept": "application/json",
+        "Authorization": "Bearer " + token 
     }
-    const respons = await fetch(`/api/publications`, options);
+    }
+    const respons = await fetch(`/api/publications`, options)
     if(respons.ok){
       const publications = await respons.json();
       setPublications(publications);
       console.log(publications);
+      console.log(respons.text)
       return publications;
     }
     return null;

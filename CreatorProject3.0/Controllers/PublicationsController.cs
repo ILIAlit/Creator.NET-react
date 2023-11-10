@@ -1,5 +1,6 @@
 ﻿using CreatorProject.Services.Interfaces;
 using CreatorProject3._0.Models.DataModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CreatorProject.Controllers
@@ -15,6 +16,7 @@ namespace CreatorProject.Controllers
             _publicationsServices = publicationsServices;
         }
 
+        [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpGet]
         public IEnumerable<PublicationModel> GetAll()
         {

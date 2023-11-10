@@ -1,27 +1,42 @@
 import { ThemeProvider } from "@emotion/react";
 import { Box, Container, CssBaseline, createTheme, Typography, Grid, TextField, Button, Link } from "@mui/material";
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import AccountsServices from "../../services/AccountsServices";
+import { UserContext } from "../../contexts/Context";
 
+
+const accountsServices = new AccountsServices();
 const defaultTheme = createTheme();
 
 const SignIn = () => {
 
+  const navigate = useNavigate();
+  const {user, setUser} = useContext(UserContext)
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    const options = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json;charset=utf-8'
-      },
-      body: JSON.stringify({
-        name: data.get('name'),
-        password: data.get('password'),
-        returnurl: 'false'
-      })
+    const loginData = {
+      name: data.get('name'),
+      password: data.get('password')
     };
-    const respons = await fetch(`/api/accounts/login`, options);
-    respons.ok ? console.log(respons.json()) : console.log(respons.json());
+    accountsServices.signIn(loginData)
+      .then((response) => {
+        if(response.isSucces){
+          setUser({
+            token: response.accessToken,
+            name: response.userName
+          });
+          sessionStorage.setItem('user', JSON.stringify({
+            token: response.accessToken,
+            name: response.userName
+          }));
+          navigate('/');
+        } else{
+          console.log("Error");
+        }
+      });
   };
 
   return (

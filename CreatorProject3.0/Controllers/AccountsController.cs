@@ -1,6 +1,7 @@
-﻿using CreatorProject3._0.Models.DataModel;
-using CreatorProject3._0.Models.ServicesModel;
-using CreatorProject3._0.Models.ViewModels;
+﻿using CreatorProject.Services.Interfaces;
+using CreatorProject3._0.Models.DataModel;
+using CreatorProject3._0.Models.ViewModels.AccountViewModel;
+using CreatorProject3._0.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,74 +13,39 @@ namespace CreatorProject3._0.Controllers
     {
         private readonly UserManager<UserModel> _userManager;
         private readonly SignInManager<UserModel> _signInManager;
+        private readonly IAccountServices _accountServices;
 
-        public AccountsController(UserManager<UserModel> userManager, SignInManager<UserModel> signInManager)
+        public AccountsController(UserManager<UserModel> userManager, SignInManager<UserModel> signInManager, IAccountServices accountServices)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _accountServices = accountServices;
         }
 
         [HttpPost("register")]
-        public async Task<RegisterResponseViewModel> Register(RegisterRequestViewModel modelRequest)
+        public async Task<IActionResult> Register(RegisterRequestViewModel modelRequest)
         {
-            RegisterResponseViewModel modelResponse = new RegisterResponseViewModel();
             if (!ModelState.IsValid)
             {
+                RegisterResponseViewModel modelResponse = new RegisterResponseViewModel();
                 modelResponse.IsSucces = false;
                 modelResponse.Massage = "Ошибка валидации";
-                return (modelResponse);
+                return BadRequest(modelResponse);
             }
-            UserModel user = new UserModel
-            {
-                UserName = modelRequest.Name,
-                Email = modelRequest.Email,
-            };
-            var result = await _userManager.CreateAsync(user, modelRequest.Password);
-            if (!result.Succeeded)
-            {
-                modelResponse.IsSucces = false;
-                modelResponse.Massage = "Ошибка";
-            }
-            else
-            {
-                await _signInManager.SignInAsync(user, false);
-                modelResponse.IsSucces = true;
-                modelResponse.Massage = "Регистрация прошла успешно";
-                return (modelResponse);
-            }
-            return (modelResponse);
+            return Ok(await _accountServices.Register(modelRequest));
         }
 
         [HttpPost("login")]
-        public async Task<LoginResponseViewModel> Login(LoginRequestViewModel modelRequest)
+        public async Task<IActionResult> Login(LoginRequestViewModel modelRequest)
         {
-            LoginResponseViewModel modelResponse = new LoginResponseViewModel();
             if (!ModelState.IsValid)
             {
+                LoginResponseViewModel modelResponse = new LoginResponseViewModel();
                 modelResponse.IsSucces = false;
                 modelResponse.Massage = "Ошибка валидации";
-                return (modelResponse);
+                return BadRequest(modelResponse);
             }
-            var result = await _signInManager.PasswordSignInAsync(modelRequest.Name, modelRequest.Password, false, false);
-            if (!result.Succeeded)
-            {
-                modelResponse.IsSucces = false;
-                modelResponse.Massage = "Неправильный логин и (или) пароль";
-            }
-            else
-            {
-                if (string.IsNullOrEmpty(modelRequest.ReturnUrl) || !Url.IsLocalUrl(modelRequest.ReturnUrl))
-                {
-                    modelResponse.IsSucces = true;
-                    modelResponse.Massage = "Успешный вход";
-                    return (modelResponse);
-                }
-                else
-                {
-                    return (modelResponse);
-                }
-            }
-            return (modelResponse);
+            return Ok(await _accountServices.Login(modelRequest));
         }
     }
 }

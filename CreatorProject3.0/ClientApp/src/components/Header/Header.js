@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { AppBar, Box, Container, IconButton, Menu, MenuItem, Toolbar, Typography, Button, Tooltip, Avatar } from "@mui/material";
 import MenuIcon from '@mui/icons-material/Menu';
+import { UserContext } from "../../contexts/Context";
 
 
 const pages = [
@@ -18,7 +19,11 @@ const pages = [
   }
 ]
 
+
+
 const Header = () => {
+
+  const {user, removeUser} = useContext(UserContext);
 
   const [anchorElNav, setAnchorElNav] = useState(null)
   const [anchorElUser, setAnchorElUser] = useState(null);
@@ -37,6 +42,10 @@ const Header = () => {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
+
+  const loginOut = () => {
+    removeUser();
+  }
 
   return (
     <AppBar 
@@ -120,10 +129,22 @@ const Header = () => {
             })}
           </Box>
           <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Avatar" src="#"></Avatar>
-              </IconButton>
+            <Tooltip title="click!">
+              {!(!!user.name) && (
+                <Button
+                  variant="contained"
+                  href="/login"
+                  onClick="#"
+                  sx={{ my: 2, color: 'white', display: 'block', textDecoration: 'none' }}>
+                    Войти
+                </Button>
+              )}
+              {(!!user.name) && (
+                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                  <Avatar alt="#" src="#" />
+                </IconButton>
+              )}
+              
             </Tooltip>
             <Menu
               sx={{ mt: '45px' }}
@@ -140,14 +161,12 @@ const Header = () => {
               }}
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}>
-              {pages.map((page, index) => {
-                return(
-                  <MenuItem key={index} onClick={handleCloseNavMenu}>
-                    <Typography textAlign="center">{page.text}</Typography>
-                    {/* <NavLink tag ={Link} to = {page.link}></NavLink> */}
-                  </MenuItem>
-                );
-              })}
+              <MenuItem onClick={handleCloseNavMenu}>
+                <Typography textAlign="center">Профиль</Typography>
+              </MenuItem>
+              <MenuItem onClick={loginOut}>
+                <Typography textAlign="center">Выйти</Typography>
+              </MenuItem>
             </Menu>
           </Box>
         </Toolbar>

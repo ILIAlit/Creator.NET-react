@@ -1,12 +1,11 @@
-﻿using CreatorProject3._0.Models.ServicesModel;
-using CreatorProject3._0.Models.ViewModels;
+﻿using CreatorProject3._0.Models.ViewModels.AccountViewModel;
 
 namespace CreatorProject3._0.Services.Interfaces
 {
     public interface IAccountServices 
     {
-        Task Register(RegisterRequestViewModel modelRequest);
+        Task<RegisterResponseViewModel> Register(RegisterRequestViewModel modelRequest);
 
-        Task Login(LoginRequestViewModel modelRequest);
+        Task<LoginResponseViewModel> Login(LoginRequestViewModel modelRequest);
     }
 }

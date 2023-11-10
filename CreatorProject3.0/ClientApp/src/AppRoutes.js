@@ -1,8 +1,8 @@
 import { Counter } from "./components/Counter";
 import { Home } from "./components/Home";
-import Publications from "./components/Publications/Publications";
-import SignIn from "./components/SignIn/SignIn";
-import SignUp from "./components/SignUp/SignUp";
+import Publications from "./pages/Publications/Publications";
+import SignIn from "./pages/SignIn/SignIn";
+import SignUp from "./pages/SignUp/SignUp";
 
 const AppRoutes = [
   {
