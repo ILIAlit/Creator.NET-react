@@ -5,13 +5,13 @@ namespace CreatorProject3._0.Models.DataModel
 {
     public class UserProfileModel
     {
-        [Key]
-        [ForeignKey("UserModel")]
-        public int Id { get; set; }
+        public string Id { get; set; } = Guid.NewGuid().ToString();
+
+        public string UserId { get; set; }
+        
+        public UserModel User { get; set; }
 
         public string? Cover { get; set; }
-
-        public string? Email { get; set; }
 
         public string? Instagram { get; set; }
 

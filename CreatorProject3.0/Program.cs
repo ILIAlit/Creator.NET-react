@@ -42,13 +42,16 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddTransient<IPublicationsServices, PublicationsServices>();
 builder.Services.AddTransient<IAccountServices, AccountsServices>();
+builder.Services.AddTransient<IProfileServices, ProfileServices>();
 
 
 
 
 
-builder.Services.AddControllersWithViews();
-
+builder.Services.AddControllersWithViews()
+    .AddNewtonsoftJson(options =>
+    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+    
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

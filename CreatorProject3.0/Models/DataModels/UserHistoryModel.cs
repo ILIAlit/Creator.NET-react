@@ -2,6 +2,6 @@
 {
     public class UserHistoryModel
     {
-        public int History_id { get; set; }
+        public int Id { get; set; }
     }
 }

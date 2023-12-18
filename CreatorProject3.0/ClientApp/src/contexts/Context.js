@@ -8,19 +8,24 @@ const Context = (props) => {
     token: ''
   });
 
+const [userCover, setUserCover] = useState(null);
+
+
+
+
   const removeUser = () => {
     sessionStorage.removeItem('user');
     setUser({
       name: '',
       token: ''
     });
-  }
+  };
 
   useEffect(() => {
     if(sessionStorage.getItem('user') != null){
       setUser(JSON.parse(sessionStorage.getItem('user')));
     }
-  },[])
+  }, [])
 
   const value = {
     user,

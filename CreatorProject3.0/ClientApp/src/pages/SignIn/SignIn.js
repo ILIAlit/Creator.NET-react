@@ -1,9 +1,14 @@
 import { ThemeProvider } from "@emotion/react";
-import { Box, Container, CssBaseline, createTheme, Typography, Grid, TextField, Button, Link } from "@mui/material";
-import { useState, useContext } from "react";
+import { Box, Container, CssBaseline, createTheme, Typography, Grid, TextField, Link, Alert, Snackbar } from "@mui/material";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AccountsServices from "../../services/AccountsServices";
 import { UserContext } from "../../contexts/Context";
+import { LoadingButton } from "@mui/lab";
+import { Controller, useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { date } from "yup";
+import { validationShema } from "./validation";
 
 
 const accountsServices = new AccountsServices();
@@ -11,17 +16,26 @@ const defaultTheme = createTheme();
 
 const SignIn = () => {
 
+  const [loading, setLoading] = useState(false);
+  const [alertOpening, setAlertOpening] = useState(false);
   const navigate = useNavigate();
-  const {user, setUser} = useContext(UserContext)
+  const { setUser} = useContext(UserContext);
 
-  const handleSubmit = async (event) => {
+  const {
+    control,
+    handleSubmit,
+    formState: {
+      errors,
+    }
+  } = useForm({
+    resolver: yupResolver(validationShema),
+  })
+
+  const onSubmit = async (data, event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    const loginData = {
-      name: data.get('name'),
-      password: data.get('password')
-    };
-    accountsServices.signIn(loginData)
+    setLoading(true);
+    console.log(data);
+    accountsServices.signIn(data)
       .then((response) => {
         if(response.isSucces){
           setUser({
@@ -35,7 +49,9 @@ const SignIn = () => {
           navigate('/');
         } else{
           console.log("Error");
+          setAlertOpening(true);
         }
+        setLoading(false);
       });
   };
 
@@ -52,41 +68,52 @@ const SignIn = () => {
             }}>
             <Typography component="h1" variant="h3" sx={{mb: 3}}>Creator.</Typography>
             <Typography component="h3" variant="h6">Вход</Typography>
-            <Box component="form" onSubmit={handleSubmit} sx={{mt: 3}}>
+            <Box component="form" onSubmit={handleSubmit(onSubmit)} sx={{mt: 3}}>
               <Grid container spacing={2}>
                 <Grid item xs={12}>
-                <TextField
-                    autoComplete="given-name"
+                  <Controller 
                     name="name"
-                    required
-                    fullWidth
-                    id="name"
-                    label="Имя"
-                    autoFocus/>
+                    control={control}
+                    render={({field}) => (
+                      <TextField
+                        value={field.value}
+                        onChange={(event) => {field.onChange(event)}}
+                        helperText = {errors.name?.message}
+                        error = {!!errors.name?.message}
+                        fullWidth
+                        label="Имя"
+                        autoFocus/>
+                    )}/>
                 </Grid>
                 <Grid item xs={12}>
-                <TextField
-                    required
-                    fullWidth
+                  <Controller
                     name="password"
-                    label="Пароль"
-                    type="password"
-                    id="password"
-                    autoComplete="new-password"
-                  />
+                    control={control}
+                    render={({field}) => (
+                      <TextField
+                        value={field.value}
+                        onChange={(event) => {field.onChange(event)}}
+                        helperText = {errors.password?.message}
+                        error = {!!errors.password?.message}
+                        fullWidth
+                        label="Пароль"
+                        type="password"/>
+                    )}/>
                 </Grid>
               </Grid>
-              <Button
+              <LoadingButton
                 type="submit"
                 fullWidth
                 variant="contained"
-                sx={{ mt: 5, mb: 3, fontSize: '16px'  }}>
+                sx={{ mt: 5, mb: 3, fontSize: '16px'  }}
+                loading={loading}
+                loadingIndicator="Загрузка…">
                 Войти
-              </Button>
+              </LoadingButton>
               <Grid container justifyContent="flex-end">
                 <Grid item>
-                  <Link href="#" variant="body2">
-                    Already don't have an account? Sign up
+                  <Link href="/register" variant="body2">
+                    У тебя нет аккаунта? Пройди регистрацию!
                   </Link>
                 </Grid>
               </Grid>

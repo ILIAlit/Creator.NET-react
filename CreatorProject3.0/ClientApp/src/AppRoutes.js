@@ -1,8 +1,10 @@
 import { Counter } from "./components/Counter";
-import { Home } from "./components/Home";
-import Publications from "./pages/Publications/Publications";
-import SignIn from "./pages/SignIn/SignIn";
-import SignUp from "./pages/SignUp/SignUp";
+import Home from "./pages/Home";
+import Profile from "./pages/Profile";
+import PublicationCreate from "./pages/PublicationCreate";
+import Publications from "./pages/Publications";
+import SignIn from "./pages/signIn/SignIn";
+import SignUp from "./pages/signUp/SignUp";
 
 const AppRoutes = [
   {
@@ -24,6 +26,14 @@ const AppRoutes = [
   {
     path: '/login',
     element: <SignIn />
+  },
+  {
+    path: '/profile',
+    element: <Profile />
+  },
+  {
+    path: '/publ-create-tool',
+    element: <PublicationCreate />
   }
 ];
 

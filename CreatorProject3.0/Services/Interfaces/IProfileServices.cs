@@ -1,11 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using CreatorProject3._0.Models.DataModel;
+using CreatorProject3._0.Models.ViewModels.ProfileViewModel;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CreatorProject3._0.Services.Interfaces
 {
     public interface IProfileServices
     {
-        Task<IActionResult> Get(string userName);
+        Task<GetResponseViewModel> Get(string userName);
 
-        Task<IActionResult> Post()
+        Task<UserProfileModel> Create([FromForm] CreateViewModelRequest modelRequest);
     }
 }

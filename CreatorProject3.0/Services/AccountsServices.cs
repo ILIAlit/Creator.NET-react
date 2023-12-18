@@ -74,10 +74,16 @@ namespace CreatorProject3._0.Services
                 Email = modelRequest.Email,
             };
             var result = await _userManager.CreateAsync(user, modelRequest.Password);
+            var errors = new List<string>();
             if (!result.Succeeded)
             {
+                foreach (var error in result.Errors)
+                {
+                    errors.Add(error.Description);
+                }
                 modelResponse.IsSucces = false;
                 modelResponse.Massage = "Ошибка";
+                modelResponse.Errors = errors;
                 return (modelResponse);
             }
             else

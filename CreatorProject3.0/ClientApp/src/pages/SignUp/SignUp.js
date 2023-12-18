@@ -1,51 +1,48 @@
-import { ThemeProvider } from "@emotion/react";
-import { Container, CssBaseline, createTheme, Box, Typography, Grid, TextField, Button, Link } from "@mui/material";
 import { useState } from "react";
-import AccountsServices from "../../services/AccountsServices";
+import { Container, CssBaseline, createTheme, Box, Typography, Grid, TextField, Link, Snackbar, Alert } from "@mui/material";
+import { ThemeProvider } from "@emotion/react";
+import LoadingButton from '@mui/lab/LoadingButton';
 import { useNavigate } from "react-router-dom";
+import { Controller, useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { validationShema } from "./validation";
+import AccountsServices from "../../services/AccountsServices";
 
 const accountsServices = new AccountsServices();
-
 const defaultTheme = createTheme();
 
 const SignUp = () => {
-  const navigate = useNavigate();
-  const [password, setPassword] = useState('');
-  const [passwordRepeat, setPasswordRepeat] = useState('');
 
-  const handleSubmit = async (event) => {
+  const [loading, setLoading] = useState(false);
+  
+  const navigate = useNavigate();
+
+  const {
+    control,
+    formState: {
+      errors
+    },
+    handleSubmit,
+  } = useForm({
+    resolver: yupResolver(validationShema),
+  });
+
+  const onSubmit = async (data, event) => {
+    console.log('Data', JSON.stringify(data));
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    const registerData = {
-      name: data.get('name'),
-      email: data.get('email'),
-      password: data.get('password'),
-      confirmpassword: data.get('confirmPassword')
-    }
-    accountsServices.signUp(registerData)
+    setLoading(true);
+    accountsServices.signUp(data)
       .then((response) => {
         console.log(response);
         if(response.isSucces){
           navigate('/login');
         } else{
-          console.log("Error");
+          // setAlertOpening(true);
         }
+        setLoading(false);
       });
   };
-
-  const handlePasswordChange = (event) => {
-    setPassword(event.target.value);
-  };
-
-  const handlePasswordRepeatChange = (event) => {
-    setPasswordRepeat(event.target.value);
-  };
-
-  const validatePasswordRepeat = () => {
-    if (password !== passwordRepeat) {
-      return 'Пароли не совпадают';
-    }
-  };
+  console.log('Errors', errors);
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -60,74 +57,93 @@ const SignUp = () => {
           }}>
           <Typography component="h1" variant="h3" sx={{mb: 3}}>Creator.</Typography>
           <Typography component="h3" variant="h6">Регистрация</Typography>
-          <Box component="form" onSubmit={handleSubmit} sx={{mt: 3}}>
+          <Box component="form" onSubmit={handleSubmit(onSubmit)} sx={{mt: 3, mb: 10}}>
             <Grid container spacing={2}>
               <Grid item xs={12}>
-              <TextField
-                  autoComplete="given-name"
+                <Controller
+                  control={control}
                   name="name"
-                  required
-                  fullWidth
-                  id="name"
-                  label="Имя"
-                  autoFocus/>
+                  render={({field}) => (
+                    <TextField
+                      error = { !!errors.name?.message }
+                      helperText = {errors.name?.message}
+                      fullWidth
+                      label="Имя"
+                      onChange={(event) => {field.onChange(event)}}
+                      value={field.value}
+                      />
+                  )}
+                />
               </Grid>
               <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  id="email"
-                  label="Почта"
+                <Controller
                   name="email"
-                  autoComplete="email"
+                  control={control} 
+                  render={({field}) => (
+                    <TextField
+                      error = {!!errors.email?.message}
+                      helperText = {errors.email?.message}
+                      fullWidth
+                      label="Почта"
+                      onChange={(event) => {field.onChange(event)}}
+                      value={field.value}
+                      />
+                  )}
                 />
               </Grid>
               <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  name="password"
-                  label="Пароль"
-                  type="password"
-                  id="password"
-                  value={password}
-                  onChange={handlePasswordChange}
-                  autoComplete="new-password"
-                />
+                <Controller
+                  control={control}
+                  name="password" 
+                  render={({field}) => (
+                    <TextField
+                      error = {!!errors.password?.message}
+                      helperText = {errors.password?.message}
+                      fullWidth
+                      label="Пароль"
+                      type="password"
+                      value={field.value}
+                      onChange={(event) => {field.onChange(event)}}/>
+                  )}
+                  />
               </Grid>
               <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  name="confirmPassword"
-                  label="Повторите пароль"
-                  type="password"
-                  id="confirmPassword"
-                  autoComplete="confirmPassword"
-                  value={passwordRepeat}
-                  onChange={handlePasswordRepeatChange}
-                  error={Boolean(validatePasswordRepeat())}
-                  helperText={validatePasswordRepeat()}
+                <Controller
+                  control={control}
+                  name="confirmpassword" 
+                  render={({field}) => (
+                    <TextField
+                      error={!!errors.confirmpassword?.message}
+                      helperText={errors.confirmpassword?.message}
+                      fullWidth
+                      label="Повторите пароль"
+                      type="password"
+                      value={field.value}
+                      onChange={(event) => {field.onChange(event)}}/>
+                  )}
                 />
               </Grid>
             </Grid>
-            <Button
+            <LoadingButton
               type="submit"
               fullWidth
+              loading={loading}
+              loadingIndicator="Загрузка…"
               variant="contained"
               sx={{ mt: 5, mb: 3, fontSize: '16px'  }}>
-              Создать
-            </Button>
+                Создать
+            </LoadingButton>
             <Grid container justifyContent="flex-end">
               <Grid item>
-                <Link href="#" variant="body2">
-                  Already have an account? Sign in
+                <Link href="/login" variant="body2">
+                  У тебя есть аккаунт? Перейди для входа
                 </Link>
               </Grid>
             </Grid>
           </Box>
         </Box>
       </Container>
+      
     </ThemeProvider>
   );
 }

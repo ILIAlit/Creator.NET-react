@@ -23,6 +23,8 @@ namespace CreatorProject3._0.Models.ViewModels.AccountViewModel
         public bool IsSucces { get; set; }
 
         public string? Massage { get; set; }
+
+        public List<string>? Errors { get; set; }
     }
 }
 

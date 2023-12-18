@@ -1,28 +1,56 @@
-import { useEffect, useState, useContext } from "react";
-import { AppBar, Box, Container, IconButton, Menu, MenuItem, Toolbar, Typography, Button, Tooltip, Avatar } from "@mui/material";
+import { useState, useContext } from "react";
+import { AppBar, Box, Container, IconButton, Menu, MenuItem, Toolbar, Typography, Button, Tooltip, Avatar, styled, alpha, InputBase } from "@mui/material";
+import SearchIcon from '@mui/icons-material/Search';
 import MenuIcon from '@mui/icons-material/Menu';
 import { UserContext } from "../../contexts/Context";
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-
-const pages = [
-  {
-    text: "home",
-    link: "/"
+const Search = styled('div')(({ theme }) => ({
+  position: 'relative',
+  borderRadius: theme.shape.borderRadius,
+  backgroundColor: alpha(theme.palette.common.white, 0.15),
+  '&:hover': {
+    backgroundColor: alpha(theme.palette.common.white, 0.25),
   },
-  {
-    text: "counter",
-    link: "/counter"
+  marginRight: theme.spacing(2),
+  marginLeft: 0,
+  width: '100%',
+  [theme.breakpoints.up('sm')]: {
+    marginLeft: theme.spacing(3),
+    width: 'auto',
   },
-  {
-    text: "publication",
-    link: "/publication"
-  }
-]
+}));
 
+const SearchIconWrapper = styled('div')(({ theme }) => ({
+  padding: theme.spacing(0, 2),
+  height: '100%',
+  position: 'absolute',
+  pointerEvents: 'none',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+}));
+
+const StyledInputBase = styled(InputBase)(({ theme }) => ({
+  color: 'inherit',
+  '& .MuiInputBase-input': {
+    padding: theme.spacing(1, 1, 1, 0),
+    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+    transition: theme.transitions.create('width'),
+    width: '100%',
+    [theme.breakpoints.up('sm')]: {
+      width: '20ch',
+      '&:focus': {
+        width: '26ch',
+      },
+    },
+  },
+}));
 
 
 const Header = () => {
-
+  const navigate = useNavigate();
   const {user, removeUser} = useContext(UserContext);
 
   const [anchorElNav, setAnchorElNav] = useState(null)
@@ -45,6 +73,7 @@ const Header = () => {
 
   const loginOut = () => {
     removeUser();
+    navigate("/")
   }
 
   return (
@@ -91,14 +120,12 @@ const Header = () => {
               sx={{
                 display: { xs: 'block', md: 'none' },
               }}>
-              {pages.map((page, index) => {
-                return(
-                  <MenuItem key={index} onClick={handleCloseNavMenu}>
-                    <Typography textAlign="center">{page.text}</Typography>
-                    {/* <NavLink tag ={Link} to = {page.link}></NavLink> */}
-                  </MenuItem>
-                );
-              })}
+              <MenuItem onClick={handleCloseNavMenu}>
+                <Typography textAlign="center">Главная</Typography>
+              </MenuItem>
+              <MenuItem onClick={handleCloseNavMenu}>
+                <Typography textAlign="center">Создать</Typography>
+              </MenuItem>
           </Menu>
         </Box>
 
@@ -115,26 +142,40 @@ const Header = () => {
             Creator.
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page, index) => {
-              return(
-                <Button
-                  key={index}
-                  variant="text"
-                  onClick={handleCloseNavMenu}
-                  href={page.link}
-                  sx={{ my: 2, color: 'white', display: 'block', textDecoration: 'none' }}>
-                    {page.text}
-                </Button>
-              )
-            })}
+            <Button
+              variant="text"
+              onClick={() => {
+                handleCloseNavMenu();
+                navigate("/")
+                }}
+              sx={{ my: 2, color: 'white', display: 'block', textDecoration: 'none' }}>
+                Главная
+            </Button>
+            <Button
+              variant="text"
+              onClick={() => {
+                handleCloseNavMenu();
+                navigate("/publ-create-tool");}}
+              sx={{ my: 2, color: 'white', display: 'block', textDecoration: 'none' }}>
+                Создать
+            </Button>
+            <Toolbar>
+              <Search>
+                <SearchIconWrapper>
+                  <SearchIcon />
+                </SearchIconWrapper>
+              <StyledInputBase
+                placeholder="Search…"
+                inputProps={{ 'aria-label': 'search' }} />
+              </Search>
+            </Toolbar>
           </Box>
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="click!">
               {!(!!user.name) && (
                 <Button
                   variant="contained"
-                  href="/login"
-                  onClick="#"
+                  onClick={() => navigate("/login")}
                   sx={{ my: 2, color: 'white', display: 'block', textDecoration: 'none' }}>
                     Войти
                 </Button>
@@ -161,10 +202,10 @@ const Header = () => {
               }}
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}>
-              <MenuItem onClick={handleCloseNavMenu}>
+              <MenuItem component={Link} to="/profile" onClick={handleCloseUserMenu}>
                 <Typography textAlign="center">Профиль</Typography>
               </MenuItem>
-              <MenuItem onClick={loginOut}>
+              <MenuItem onClick={() => {loginOut(); handleCloseUserMenu()}}>
                 <Typography textAlign="center">Выйти</Typography>
               </MenuItem>
             </Menu>

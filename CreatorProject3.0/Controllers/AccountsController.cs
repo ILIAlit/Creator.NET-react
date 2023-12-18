@@ -23,7 +23,7 @@ namespace CreatorProject3._0.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register(RegisterRequestViewModel modelRequest)
+        public async Task<IActionResult> Register([FromBody] RegisterRequestViewModel modelRequest)
         {
             if (!ModelState.IsValid)
             {
@@ -32,7 +32,12 @@ namespace CreatorProject3._0.Controllers
                 modelResponse.Massage = "Ошибка валидации";
                 return BadRequest(modelResponse);
             }
-            return Ok(await _accountServices.Register(modelRequest));
+            var response = await _accountServices.Register(modelRequest);
+            if (!response.IsSucces)
+            {
+                return BadRequest(response);
+            }
+            return Ok(response);
         }
 
         [HttpPost("login")]
